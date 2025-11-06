@@ -62,7 +62,7 @@
             <article class="bg-dark-100 rounded-xl overflow-hidden border border-gray-800 hover:border-primary/50 transition-all hover-lift">
                 @if($article->featured_image)
                 <div class="aspect-video bg-gradient-to-br from-primary/20 to-purple-500/20 relative overflow-hidden">
-                    <img src="{{ Storage::url($article->featured_image) }}" 
+                    <img src="{{ asset('storage/' . $article->featured_image) }}" 
                          alt="{{ $article->title }}"
                          class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                     <div class="absolute top-4 left-4">

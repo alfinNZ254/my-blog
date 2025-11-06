@@ -64,7 +64,7 @@
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto">
             <div class="aspect-video rounded-xl overflow-hidden bg-gradient-to-br from-primary/20 to-purple-500/20">
-                <img src="{{ Storage::url($article->featured_image) }}" 
+                <img src="{{ asset('storage/' . $article->featured_image) }}" 
                      alt="{{ $article->title }}"
                      class="w-full h-full object-cover">
             </div>
@@ -129,16 +129,14 @@
                                             </div>
                                         @endif
                                         
-                                        <!-- Image Placeholder -->
-
-@if(!empty($step['image_path']))
-    <figure class="my-6">
-        <img src="{{ Storage::url($step['image_path']) }}" alt="{{ $step['image_alt'] ?? '' }}" class="w-full rounded-lg shadow-md">
-        @if(!empty($step['image_alt']))
-            <figcaption class="text-center text-sm text-gray-400 mt-2">{{ $step['image_alt'] }}</figcaption>
-        @endif
-    </figure>
-                                            </div>
+                                        <!-- Image -->
+                                        @if(!empty($step['image_path']))
+                                            <figure class="my-6">
+                                                <img src="{{ asset('storage/' . $step['image_path']) }}" alt="{{ $step['image_alt'] ?? '' }}" class="w-full rounded-lg shadow-md">
+                                                @if(!empty($step['image_alt']))
+                                                    <figcaption class="text-center text-sm text-gray-400 mt-2">{{ $step['image_alt'] }}</figcaption>
+                                                @endif
+                                            </figure>
                                         @endif
                                     </div>
                                     

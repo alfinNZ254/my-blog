@@ -111,6 +111,13 @@
                     <a href="#" class="hover:text-primary transition-colors">
                         <i class="fas fa-envelope mr-2"></i>Contact
                     </a>
+                    @auth
+                        @if(Auth::user()->is_admin ?? false)
+                        <a href="{{ route('admin.articles.index') }}" class="hover:text-primary transition-colors text-yellow-400">
+                            <i class="fas fa-cog mr-2"></i>Admin
+                        </a>
+                        @endif
+                    @endauth
                 </div>
                 
                 <!-- Mobile menu button -->
@@ -133,6 +140,13 @@
                 <a href="#" class="block py-2 hover:text-primary transition-colors">
                     <i class="fas fa-envelope mr-2"></i>Contact
                 </a>
+                @auth
+                    @if(Auth::user()->is_admin ?? false)
+                    <a href="{{ route('admin.articles.index') }}" class="block py-2 hover:text-primary transition-colors text-yellow-400">
+                        <i class="fas fa-cog mr-2"></i>Admin
+                    </a>
+                    @endif
+                @endauth
             </div>
         </div>
     </header>

@@ -59,21 +59,37 @@ class ArticleController extends Controller
         }
 
         // Proses data langkah-langkah
-        $steps = json_decode($validated['article_steps'], true);
+        $steps = null;
+        if (!empty($validated['article_steps'])) {
+            $steps = json_decode($validated['article_steps'], true);
+        }
         
         // Simpan setiap gambar langkah
-        if (is_array($steps)) {
+        if (is_array($steps) && count($steps) > 0) {
             $newSteps = [];
             foreach ($steps as $step) {
-                if (isset($step['image_file'])) {
-                    $base64Image = $step['image_file'];
-                    list($type, $base64Image) = explode(';', $base64Image);
-                    list(, $base64Image) = explode(',', $base64Image);
-                    $image = base64_decode($base64Image);
-                    $mime = str_replace('data:image/', '', $type);
-                    $imageName = 'articles/steps/' . Str::random(40) . '.' . $mime;
-                    Storage::disk('public')->put($imageName, $image);
-                    $step['image_path'] = $imageName;
+                if (isset($step['image_file']) && !empty($step['image_file'])) {
+                    try {
+                        $base64Image = $step['image_file'];
+                        // Handle base64 image data
+                        if (strpos($base64Image, 'data:image') === 0) {
+                            list($type, $base64Image) = explode(';', $base64Image);
+                            list(, $base64Image) = explode(',', $base64Image);
+                            $image = base64_decode($base64Image);
+                            
+                            // Determine file extension from mime type
+                            $mime = str_replace('data:image/', '', $type);
+                            $extension = $mime;
+                            if ($mime === 'jpeg') $extension = 'jpg';
+                            
+                            $imageName = 'articles/steps/' . Str::random(40) . '.' . $extension;
+                            Storage::disk('public')->put($imageName, $image);
+                            $step['image_path'] = $imageName;
+                        }
+                    } catch (\Exception $e) {
+                        // If image processing fails, continue without image
+                        \Log::warning('Failed to process step image: ' . $e->getMessage());
+                    }
                 }
                 unset($step['image_file']); // Hapus data file agar tidak tersimpan di DB
                 $newSteps[] = $step;
@@ -82,6 +98,21 @@ class ArticleController extends Controller
             $validated['content'] = $this->generateContentFromSteps($newSteps);
         } else {
             $validated['article_steps'] = null;
+            // If no steps, use excerpt as content
+            if (empty($validated['content'])) {
+                $validated['content'] = $validated['excerpt'];
+            }
+        }
+
+        // Handle tags - convert string to array
+        if (!empty($validated['tags']) && is_string($validated['tags'])) {
+            $tags = array_map('trim', explode(',', $validated['tags']));
+            $validated['tags'] = array_filter($tags); // Remove empty tags
+        }
+
+        // Set published_at if publishing
+        if ($validated['is_published'] && empty($validated['published_at'])) {
+            $validated['published_at'] = now();
         }
 
         // Buat dan simpan artikel
@@ -134,21 +165,43 @@ class ArticleController extends Controller
         }
 
         // Proses data langkah-langkah
-        $steps = json_decode($validated['article_steps'], true);
+        $steps = null;
+        if (!empty($validated['article_steps'])) {
+            $steps = json_decode($validated['article_steps'], true);
+        }
         
         // Simpan setiap gambar langkah
-        if (is_array($steps)) {
+        if (is_array($steps) && count($steps) > 0) {
             $newSteps = [];
             foreach ($steps as $step) {
-                if (isset($step['image_file'])) {
-                    $base64Image = $step['image_file'];
-                    list($type, $base64Image) = explode(';', $base64Image);
-                    list(, $base64Image) = explode(',', $base64Image);
-                    $image = base64_decode($base64Image);
-                    $mime = str_replace('data:image/', '', $type);
-                    $imageName = 'articles/steps/' . Str::random(40) . '.' . $mime;
-                    Storage::disk('public')->put($imageName, $image);
-                    $step['image_path'] = $imageName;
+                // If step has existing image_path, keep it unless new image is uploaded
+                if (isset($step['image_file']) && !empty($step['image_file'])) {
+                    try {
+                        $base64Image = $step['image_file'];
+                        // Handle base64 image data
+                        if (strpos($base64Image, 'data:image') === 0) {
+                            // Delete old image if exists
+                            if (isset($step['image_path']) && $step['image_path']) {
+                                Storage::disk('public')->delete($step['image_path']);
+                            }
+                            
+                            list($type, $base64Image) = explode(';', $base64Image);
+                            list(, $base64Image) = explode(',', $base64Image);
+                            $image = base64_decode($base64Image);
+                            
+                            // Determine file extension from mime type
+                            $mime = str_replace('data:image/', '', $type);
+                            $extension = $mime;
+                            if ($mime === 'jpeg') $extension = 'jpg';
+                            
+                            $imageName = 'articles/steps/' . Str::random(40) . '.' . $extension;
+                            Storage::disk('public')->put($imageName, $image);
+                            $step['image_path'] = $imageName;
+                        }
+                    } catch (\Exception $e) {
+                        // If image processing fails, continue without image
+                        \Log::warning('Failed to process step image: ' . $e->getMessage());
+                    }
                 }
                 unset($step['image_file']); // Hapus data file agar tidak tersimpan di DB
                 $newSteps[] = $step;
@@ -157,6 +210,21 @@ class ArticleController extends Controller
             $validated['content'] = $this->generateContentFromSteps($newSteps);
         } else {
             $validated['article_steps'] = null;
+            // If no steps, use excerpt as content
+            if (empty($validated['content'])) {
+                $validated['content'] = $validated['excerpt'];
+            }
+        }
+
+        // Handle tags - convert string to array
+        if (!empty($validated['tags']) && is_string($validated['tags'])) {
+            $tags = array_map('trim', explode(',', $validated['tags']));
+            $validated['tags'] = array_filter($tags); // Remove empty tags
+        }
+
+        // Set published_at if publishing
+        if ($validated['is_published'] && empty($article->published_at)) {
+            $validated['published_at'] = now();
         }
 
         // Perbarui artikel

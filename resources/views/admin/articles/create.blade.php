@@ -17,6 +17,26 @@
             </h1>
         </div>
 
+        <!-- Success/Error Messages -->
+        @if(session('success'))
+        <div class="mb-6 bg-green-500/20 border border-green-500/50 rounded-lg p-4 text-green-400">
+            <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
+        </div>
+        @endif
+
+        @if($errors->any())
+        <div class="mb-6 bg-red-500/20 border border-red-500/50 rounded-lg p-4">
+            <h3 class="text-red-400 font-semibold mb-2">
+                <i class="fas fa-exclamation-circle mr-2"></i>Terjadi kesalahan:
+            </h3>
+            <ul class="list-disc list-inside text-red-300 text-sm space-y-1">
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         <form method="POST" action="{{ route('admin.articles.store') }}" enctype="multipart/form-data" id="article-form">
             @csrf
             
@@ -33,38 +53,48 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <label class="block text-sm font-semibold mb-2">
-                                    <i class="fas fa-heading mr-2 text-primary"></i>Judul Artikel
+                                    <i class="fas fa-heading mr-2 text-primary"></i>Judul Artikel <span class="text-red-400">*</span>
                                 </label>
                                 <input type="text" name="title" value="{{ old('title') }}" 
-                                       class="w-full px-4 py-3 bg-dark-200 border border-gray-800 rounded-lg focus:border-primary focus:outline-none transition-colors text-white"
+                                       class="w-full px-4 py-3 bg-dark-200 border {{ $errors->has('title') ? 'border-red-500' : 'border-gray-800' }} rounded-lg focus:border-primary focus:outline-none transition-colors text-white"
                                        placeholder="Contoh: Cara Install Laravel 10" required>
+                                @error('title')
+                                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                                @enderror
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-semibold mb-2">
-                                    <i class="fas fa-folder mr-2 text-primary"></i>Kategori
+                                    <i class="fas fa-folder mr-2 text-primary"></i>Kategori <span class="text-red-400">*</span>
                                 </label>
                                 <select name="category" 
-                                        class="w-full px-4 py-3 bg-dark-200 border border-gray-800 rounded-lg focus:border-primary focus:outline-none transition-colors text-white" required>
+                                        class="w-full px-4 py-3 bg-dark-200 border {{ $errors->has('category') ? 'border-red-500' : 'border-gray-800' }} rounded-lg focus:border-primary focus:outline-none transition-colors text-white" required>
                                     <option value="">Pilih kategori</option>
-                                    <option value="Laravel">Laravel</option>
-                                    <option value="Vue.js">Vue.js</option>
-                                    <option value="React">React</option>
-                                    <option value="PHP">PHP</option>
-                                    <option value="JavaScript">JavaScript</option>
-                                    <option value="Tutorial">Tutorial</option>
-                                    <option value="Tips">Tips</option>
+                                    <option value="Laravel" {{ old('category') == 'Laravel' ? 'selected' : '' }}>Laravel</option>
+                                    <option value="Vue.js" {{ old('category') == 'Vue.js' ? 'selected' : '' }}>Vue.js</option>
+                                    <option value="React" {{ old('category') == 'React' ? 'selected' : '' }}>React</option>
+                                    <option value="PHP" {{ old('category') == 'PHP' ? 'selected' : '' }}>PHP</option>
+                                    <option value="JavaScript" {{ old('category') == 'JavaScript' ? 'selected' : '' }}>JavaScript</option>
+                                    <option value="Tutorial" {{ old('category') == 'Tutorial' ? 'selected' : '' }}>Tutorial</option>
+                                    <option value="Tips" {{ old('category') == 'Tips' ? 'selected' : '' }}>Tips</option>
                                 </select>
+                                @error('category')
+                                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-semibold mb-2">
-                                <i class="fas fa-quote-left mr-2 text-primary"></i>Ringkasan Artikel
+                                <i class="fas fa-quote-left mr-2 text-primary"></i>Ringkasan Artikel <span class="text-red-400">*</span>
                             </label>
                             <textarea name="excerpt" rows="3" 
-                                      class="w-full px-4 py-3 bg-dark-200 border border-gray-800 rounded-lg focus:border-primary focus:outline-none transition-colors text-white"
+                                      class="w-full px-4 py-3 bg-dark-200 border {{ $errors->has('excerpt') ? 'border-red-500' : 'border-gray-800' }} rounded-lg focus:border-primary focus:outline-none transition-colors text-white"
                                       placeholder="Ringkasan singkat tentang apa yang akan dipelajari pembaca..." required>{{ old('excerpt') }}</textarea>
+                            @error('excerpt')
+                            <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                            @enderror
+                            <p class="mt-1 text-xs text-gray-400">Ringkasan ini akan ditampilkan di halaman utama dan sebagai preview artikel</p>
                         </div>
                     </div>
 
@@ -451,49 +481,80 @@ document.getElementById('article-form').addEventListener('submit', function(e) {
     const steps = [];
     const formData = new FormData(this); // Use FormData to handle files
 
+    // Process all steps and convert images to base64
+    const stepPromises = [];
     document.querySelectorAll('.step-item').forEach((step, index) => {
         const stepData = {
             step_number: index + 1,
-            title: step.querySelector('.step-title').value,
-            explanation: step.querySelector('.step-explanation').value,
-            code: step.querySelector('.step-code').value,
-            code_language: step.querySelector('.code-language').value,
-            image_alt: step.querySelector('.image-alt').value
+            title: step.querySelector('.step-title').value || `Step ${index + 1}`,
+            explanation: step.querySelector('.step-explanation').value || '',
+            code: step.querySelector('.step-code').value || '',
+            code_language: step.querySelector('.code-language').value || 'php',
+            image_alt: step.querySelector('.image-alt').value || ''
         };
         
-        // Handle image file
+        // Handle image file - convert to base64
         const imageFile = step.querySelector('.step-image').files[0];
         if (imageFile) {
-            // Tambahkan file ke FormData dengan nama yang unik
-            const imageName = `step_image_${index + 1}`;
-            formData.append(imageName, imageFile);
-            stepData.image_name = imageName; // Simpan nama file untuk digunakan di backend
+            const imagePromise = new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    stepData.image_file = e.target.result; // Base64 string
+                    resolve();
+                };
+                reader.onerror = function() {
+                    resolve(); // Continue even if image read fails
+                };
+                reader.readAsDataURL(imageFile);
+            });
+            stepPromises.push(imagePromise);
         }
         
         steps.push(stepData);
     });
     
-    // Tambahkan data steps sebagai string JSON ke FormData
-    formData.append('article_steps', JSON.stringify(steps));
-    
-    // Kirim form menggunakan fetch API
-    fetch(this.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Handle success, redirection, etc.
-        if (data.success) {
-            window.location.href = data.redirect_url;
-        }
-    })
-    .catch(error => {
-        // Handle errors
-        console.error('Error:', error);
+    // Wait for all images to be converted to base64
+    Promise.all(stepPromises).then(() => {
+        // Remove article_steps if it was added before
+        formData.delete('article_steps');
+        
+        // Add steps as JSON string
+        formData.append('article_steps', JSON.stringify(steps));
+        
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
+        
+        // Submit form using fetch API
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+                return;
+            }
+            return response.json().then(data => {
+                if (data.success || response.ok) {
+                    window.location.href = data.redirect_url || '{{ route("admin.articles.index") }}';
+                } else {
+                    throw new Error(data.message || 'Terjadi kesalahan saat menyimpan artikel');
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan: ' + error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
     });
 });
 // Initialize with one step
