@@ -10,15 +10,27 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->json('article_steps')->nullable()->after('content');
-        });
+        // Check if table exists
+        if (!Schema::hasTable('articles')) {
+            return; // Table doesn't exist yet, skip this migration
+        }
+
+        // Check if column already exists
+        if (!Schema::hasColumn('articles', 'article_steps')) {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->json('article_steps')->nullable()->after('content');
+            });
+        }
+        // If column already exists, do nothing
     }
 
     public function down()
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->dropColumn('article_steps');
-        });
+        // Check if table exists and column exists
+        if (Schema::hasTable('articles') && Schema::hasColumn('articles', 'article_steps')) {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->dropColumn('article_steps');
+            });
+        }
     }
 };

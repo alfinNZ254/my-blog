@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('excerpt');
             $table->longText('content');
+            $table->json('article_steps')->nullable(); // Add article_steps directly
             $table->string('featured_image')->nullable();
             $table->string('category');
             $table->json('tags')->nullable();

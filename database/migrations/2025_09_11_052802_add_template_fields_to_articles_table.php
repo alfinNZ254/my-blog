@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            //
-        });
+        // This migration is empty - skip if table doesn't exist
+        if (!Schema::hasTable('articles')) {
+            return;
+        }
+        // Migration is intentionally empty, no changes needed
     }
 
     /**
