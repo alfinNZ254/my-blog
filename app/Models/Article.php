@@ -93,16 +93,18 @@ class Article extends Model
     public function getReadingTimeAttribute()
     {
         // Hitung waktu membaca berdasarkan langkah-langkah jika ada
-        if ($this->article_steps) {
+        $steps = $this->getArticleStepsArray();
+
+        if (!empty($steps)) {
             $wordCount = 0;
-            foreach ($this->article_steps as $step) {
+            foreach ($steps as $step) {
                 $wordCount += str_word_count(strip_tags($step['explanation'] ?? ''));
             }
             return max(ceil($wordCount / 200), 1); // Minimum 1 menit
         }
 
         // Fallback ke konten jika article_steps tidak tersedia
-        $wordCount = str_word_count(strip_tags($this->content));
+        $wordCount = str_word_count(strip_tags($this->content ?? ''));
         return max(ceil($wordCount / 200), 1);
     }
 
@@ -113,6 +115,33 @@ class Article extends Model
      */
     public function getStepsCountAttribute()
     {
-        return $this->article_steps ? count($this->article_steps) : 0;
+        $steps = $this->getArticleStepsArray();
+        return is_array($steps) ? count($steps) : 0;
+    }
+
+    /**
+     * Get article steps as array, handling both JSON string and array formats.
+     *
+     * @return array
+     */
+    public function getArticleStepsArray()
+    {
+        $steps = $this->article_steps;
+        
+        // If already an array, return it
+        if (is_array($steps)) {
+            return $steps;
+        }
+        
+        // If it's a string, try to decode it
+        if (is_string($steps)) {
+            $decoded = json_decode($steps, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+        }
+        
+        // Return empty array if invalid
+        return [];
     }
 }

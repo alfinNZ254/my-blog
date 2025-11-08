@@ -94,7 +94,8 @@ class ArticleController extends Controller
                 unset($step['image_file']); // Hapus data file agar tidak tersimpan di DB
                 $newSteps[] = $step;
             }
-            $validated['article_steps'] = json_encode($newSteps);
+            // Save as array; Eloquent cast will handle JSON encoding
+            $validated['article_steps'] = $newSteps;
             $validated['content'] = $this->generateContentFromSteps($newSteps);
         } else {
             $validated['article_steps'] = null;
@@ -206,7 +207,8 @@ class ArticleController extends Controller
                 unset($step['image_file']); // Hapus data file agar tidak tersimpan di DB
                 $newSteps[] = $step;
             }
-            $validated['article_steps'] = json_encode($newSteps);
+            // Save as array; Eloquent cast will handle JSON encoding
+            $validated['article_steps'] = $newSteps;
             $validated['content'] = $this->generateContentFromSteps($newSteps);
         } else {
             $validated['article_steps'] = null;

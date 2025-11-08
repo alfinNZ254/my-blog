@@ -7,14 +7,23 @@
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-5xl mx-auto">
         <!-- Header -->
-        <div class="flex items-center mb-8">
-            <a href="{{ route('admin.articles.index') }}" 
-               class="w-10 h-10 bg-dark-100 hover:bg-dark-200 rounded-lg flex items-center justify-center mr-4 transition-colors">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h1 class="text-3xl font-bold">
-                <i class="fas fa-plus mr-2 text-primary"></i>Buat Artikel Baru
-            </h1>
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center">
+                <a href="{{ route('admin.articles.index') }}" 
+                   class="w-10 h-10 bg-dark-100 hover:bg-dark-200 rounded-lg flex items-center justify-center mr-4 transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="text-3xl font-bold">
+                    <i class="fas fa-plus mr-2 text-primary"></i>Buat Artikel Baru
+                </h1>
+            </div>
+            <form method="POST" action="{{ route('admin.logout') }}" class="inline">
+                @csrf
+                <button type="submit" 
+                        class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-semibold transition-all hover-lift flex items-center">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </form>
         </div>
 
         <!-- Success/Error Messages -->

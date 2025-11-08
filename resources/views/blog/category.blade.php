@@ -49,11 +49,13 @@
                             <i class="fas fa-clock mr-1"></i>
                             {{ $article->reading_time }} menit
                         </span>
-                        {{-- Mengganti hasSteps() dengan pemeriksaan langsung pada array article_steps --}}
-                        @if (!empty($article->article_steps))
+                        @php
+                            $articleSteps = $article->getArticleStepsArray();
+                        @endphp
+                        @if (!empty($articleSteps))
                         <span class="flex items-center text-primary">
                             <i class="fas fa-list-ol mr-1"></i>
-                            {{ count($article->article_steps) }} Langkah
+                            {{ count($articleSteps) }} Langkah
                         </span>
                         @endif
                     </div>

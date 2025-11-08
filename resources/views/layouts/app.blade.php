@@ -116,6 +116,12 @@
                         <a href="{{ route('admin.articles.index') }}" class="hover:text-primary transition-colors text-yellow-400">
                             <i class="fas fa-cog mr-2"></i>Admin
                         </a>
+                        <form method="POST" action="{{ route('admin.logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="hover:text-red-400 transition-colors text-red-500">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </button>
+                        </form>
                         @endif
                     @endauth
                 </div>
@@ -145,6 +151,12 @@
                     <a href="{{ route('admin.articles.index') }}" class="block py-2 hover:text-primary transition-colors text-yellow-400">
                         <i class="fas fa-cog mr-2"></i>Admin
                     </a>
+                    <form method="POST" action="{{ route('admin.logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="block w-full text-left py-2 hover:text-red-400 transition-colors text-red-500">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </button>
+                    </form>
                     @endif
                 @endauth
             </div>
@@ -166,8 +178,8 @@
                         <i class="fas fa-code mr-2"></i>AlfinSys
                     </h3>
                     <p class="text-gray-400 leading-relaxed">
-                        Blog tutorial programming dan teknologi terbaru. 
-                        Berbagi pengetahuan untuk developer Indonesia.
+                        Blog tutorial. 
+                        Berbagi pengetahuan.
                     </p>
                 </div>
                 
@@ -186,13 +198,13 @@
                 <div>
                     <h3 class="text-xl font-semibold mb-4">Follow Me</h3>
                     <div class="flex space-x-4">
-                        <a href="#" class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">
+                        <a href="https://github.com/alfinNZ254" class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">
                             <i class="fab fa-github"></i>
                         </a>
                         <a href="#" class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">
+                        <a href="https://linkedin.com/in/alfinzamjaro" class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">
                             <i class="fab fa-linkedin"></i>
                         </a>
                         <a href="#" class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">

@@ -10,10 +10,19 @@
             <h1 class="text-3xl font-bold">
                 <i class="fas fa-cog mr-2 text-primary"></i>Kelola Artikel
             </h1>
-            <a href="{{ route('admin.articles.create') }}" 
-               class="bg-primary hover:bg-primary/80 px-6 py-3 rounded-lg font-semibold transition-all hover-lift">
-                <i class="fas fa-plus mr-2"></i>Artikel Baru
-            </a>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('admin.articles.create') }}" 
+                   class="bg-primary hover:bg-primary/80 px-6 py-3 rounded-lg font-semibold transition-all hover-lift">
+                    <i class="fas fa-plus mr-2"></i>Artikel Baru
+                </a>
+                <form method="POST" action="{{ route('admin.logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" 
+                            class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-semibold transition-all hover-lift flex items-center">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!-- Articles Table -->

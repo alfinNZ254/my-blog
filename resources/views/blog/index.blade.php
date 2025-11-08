@@ -13,8 +13,7 @@
                 Learn. Code. Build.
             </h1>
             <p class="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
-                Tutorial programming terbaru, tips & tricks, dan insight teknologi 
-                untuk developer Indonesia
+                Tutorial, tips & tricks teknologi 
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="#articles" class="bg-primary hover:bg-primary/80 px-8 py-3 rounded-lg font-semibold transition-all hover-lift">
@@ -22,6 +21,9 @@
                 </a>
                 <a href="#" class="bg-transparent border border-gray-600 hover:border-primary px-8 py-3 rounded-lg font-semibold transition-all hover-lift">
                     <i class="fab fa-github mr-2"></i>View GitHub
+                </a>
+                <a href="https://linkedin.com/in/alfinzamjaro" target="_blank" class="bg-primary hover:bg-primary/80 px-8 py-3 rounded-lg font-semibold transition-all hover-lift">
+                    <i class="fab fa-linkedin mr-2"></i>LinkedIn
                 </a>
             </div>
         </div>
@@ -132,7 +134,7 @@
 </section>
 
 <!-- Newsletter Section -->
-<section class="py-20 bg-gradient-to-r from-primary/10 to-purple-500/10">
+<!-- <section class="py-20 bg-gradient-to-r from-primary/10 to-purple-500/10">
     <div class="container mx-auto px-4">
         <div class="max-w-2xl mx-auto text-center">
             <h2 class="text-3xl font-bold mb-4">
@@ -152,7 +154,7 @@
             </form>
         </div>
     </div>
-</section>
+</section> -->
 
 <style>
 .line-clamp-2 {

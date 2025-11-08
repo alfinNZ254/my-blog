@@ -89,6 +89,15 @@
                 </div>
             @endif
 
+            @if (session('success'))
+                <div class="bg-green-500/20 border border-green-500/50 rounded-lg p-4 mb-6">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                        <span class="text-green-400 text-sm">{{ session('success') }}</span>
+                    </div>
+                </div>
+            @endif
+
             <!-- Login Form -->
             <form method="POST" action="{{ route('admin.login') }}">
                 @csrf
@@ -143,14 +152,14 @@
         </div>
 
         <!-- Quick Info -->
-        <div class="mt-6 text-center">
+        <!-- <div class="mt-6 text-center">
             <div class="glass rounded-lg p-4">
                 <h3 class="text-sm font-semibold text-primary mb-2">Demo Account</h3>
                 <p class="text-xs text-gray-400 mb-1">Email: admin@blog.com</p>
                 <p class="text-xs text-gray-400">Password: password123</p>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <script>
         function togglePassword() {
