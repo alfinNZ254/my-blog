@@ -154,8 +154,9 @@ class ArticleController extends Controller
         ]);
 
         // Handle is_published checkbox
-        $validated['is_published'] = $request->has('is_published');
-        
+        // $validated['is_published'] = $request->has('is_published');
+        $validated['is_published'] = $request->boolean('is_published');
+
         // Handle featured image upload
         if ($request->hasFile('featured_image')) {
             // Hapus gambar lama jika ada
